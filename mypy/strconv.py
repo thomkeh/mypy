@@ -7,6 +7,7 @@ from typing import Any, List, Optional, Sequence, Tuple, Union
 from typing_extensions import TYPE_CHECKING
 
 import mypy.nodes
+from mypy.nodes import IMPLICITLY_ABSTRACT, IS_ABSTRACT
 from mypy.util import IdMapper, short_type
 from mypy.visitor import NodeVisitor
 
@@ -133,7 +134,7 @@ class StrConv(NodeVisitor[str]):
         arg_kinds = {arg.kind for arg in o.arguments}
         if len(arg_kinds & {mypy.nodes.ARG_NAMED, mypy.nodes.ARG_NAMED_OPT}) > 0:
             a.insert(1, f"MaxPos({o.max_pos})")
-        if o.abstract_status:
+        if o.abstract_status in (IS_ABSTRACT, IMPLICITLY_ABSTRACT):
             a.insert(-1, "Abstract")
         if o.is_static:
             a.insert(-1, "Static")
