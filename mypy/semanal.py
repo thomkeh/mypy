@@ -3225,7 +3225,7 @@ class SemanticAnalyzer(
                 # If this is a protocol or if `warn_uninitialized_attributes` is set,
                 # we keep track of uninitialized variables.
                 if isinstance(lvalue.node, Var):
-                    lvalue.node.is_abstract_var = True
+                    lvalue.node.is_uninitialized = True
         else:
             if (
                 self.type
@@ -3781,7 +3781,7 @@ class SemanticAnalyzer(
                 node is None
                 or (
                     isinstance(node.node, Var)
-                    and node.node.is_abstract_var
+                    and node.node.is_uninitialized
                     and not defined_in_this_class
                 )
                 # ... also an explicit declaration on self also creates a new Var.
@@ -3807,11 +3807,11 @@ class SemanticAnalyzer(
                     self.type.names[lval.name] = SymbolTableNode(MDEF, v, implicit=True)
             elif (
                 isinstance(node.node, Var)
-                and node.node.is_abstract_var
+                and node.node.is_uninitialized
                 and not self.type.is_protocol
             ):
                 # Something is assigned to this variable here, so we mark it as initialized.
-                node.node.is_abstract_var = False
+                node.node.is_uninitialized = False
         self.check_lvalue_validity(lval.node, lval)
 
     def is_self_member_ref(self, memberexpr: MemberExpr) -> bool:
@@ -4186,7 +4186,7 @@ class SemanticAnalyzer(
         if len(s.lvalues) != 1 or not isinstance(lvalue, RefExpr):
             return
         if self.is_class_scope() and isinstance(lvalue, NameExpr) and isinstance(lvalue.node, Var):
-            lvalue.node.is_abstract_var = False
+            lvalue.node.is_uninitialized = False
         if not s.type or not self.is_classvar(s.type):
             return
         if self.is_class_scope() and isinstance(lvalue, NameExpr):
