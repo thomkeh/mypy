@@ -243,6 +243,7 @@ from mypy.types import (
     FINAL_TYPE_NAMES,
     NEVER_NAMES,
     OVERLOAD_NAMES,
+    OVERRIDE_DECORATOR_NAMES,
     PROTOCOL_NAMES,
     REVEAL_TYPE_NAMES,
     TPDICT_NAMES,
@@ -1491,6 +1492,10 @@ class SemanticAnalyzer(
                 dec.func.is_class = True
                 dec.var.is_classmethod = True
                 self.check_decorated_function_is_method("classmethod", dec)
+            elif refers_to_fullname(d, OVERRIDE_DECORATOR_NAMES):
+                removed.append(i)
+                dec.func.is_explicit_override = True
+                self.check_decorated_function_is_method("override", dec)
             elif refers_to_fullname(
                 d,
                 (
