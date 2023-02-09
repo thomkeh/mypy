@@ -67,4 +67,6 @@ def dataclass_transform(
     **kwargs: Any,
 ) -> Callable[[T], T]: ...
 
+def override(__arg: _T) -> _T: ...
+
 _FutureFeatureFixture = 0
