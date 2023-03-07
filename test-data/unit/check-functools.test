@@ -119,18 +119,13 @@ class Child(Parent):
     def f(self) -> str: pass
     @cached_property
     def g(self) -> int: pass
-    @cached_property  # E: Too many arguments for property
+    @cached_property  # E: Argument 1 to "cached_property" has incompatible type "Callable[[Child, Any], int]"; expected "Callable[[Any], int]"
     def h(self, arg) -> int: pass
 reveal_type(Parent().f)  # N: Revealed type is "builtins.str"
 reveal_type(Child().f)  # N: Revealed type is "builtins.str"
 reveal_type(Child().g)  # N: Revealed type is "builtins.int"
 Child().f = "Hello World"
 Child().g = "invalid"  # E: Incompatible types in assignment (expression has type "str", variable has type "int")
-[file functools.pyi]
-import sys
-from typing import TypeVar, Generic
-_T = TypeVar('_T')
-class cached_property(Generic[_T]): ...
 [builtins fixtures/property.pyi]
 
 [case testTotalOrderingWithForwardReference]

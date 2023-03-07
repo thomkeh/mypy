@@ -1500,7 +1500,6 @@ class SemanticAnalyzer(
                 (
                     "builtins.property",
                     "abc.abstractproperty",
-                    "functools.cached_property",
                     "enum.property",
                 ),
             ):
@@ -1509,8 +1508,6 @@ class SemanticAnalyzer(
                 dec.var.is_property = True
                 if refers_to_fullname(d, "abc.abstractproperty"):
                     dec.func.abstract_status = IS_ABSTRACT
-                elif refers_to_fullname(d, "functools.cached_property"):
-                    dec.var.is_settable_property = True
                 self.check_decorated_function_is_method("property", dec)
             elif refers_to_fullname(d, "typing.no_type_check"):
                 dec.var.type = AnyType(TypeOfAny.special_form)
