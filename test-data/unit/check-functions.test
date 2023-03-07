@@ -2899,3 +2899,53 @@ class B(A):
     def f2(self, x: int) -> str: pass  # E: Method "f2" is marked as an override, but no base method was found with this name
 [typing fixtures/typing-full.pyi]
 [builtins fixtures/tuple.pyi]
+
+[case explicitOverrideOverloads]
+# flags: --python-version 3.12
+from typing import overload, override
+
+class A:
+    def f(self, x: int) -> str: pass
+
+class B(A):
+    @overload
+    def f2(self, x: int) -> str: pass
+    @overload
+    def f2(self, x: str) -> str: pass
+    @override
+    def f2(self, x: int | str) -> str: pass
+
+class C(A):
+    @overload
+    def f(self, y: int) -> str: pass
+    @overload
+    def f(self, y: str) -> str: pass
+    @override
+    def f(self, y: int | str) -> str: pass
+[typing fixtures/typing-full.pyi]
+[builtins fixtures/tuple.pyi]
+
+[case explicitOverrideNotOnOverloadsImplementation]
+# flags: --python-version 3.12
+from typing import overload, override
+
+class A:
+    def f(self, x: int) -> str: pass
+
+class B(A):
+    @overload
+    def f2(self, x: int) -> str: pass
+    @override
+    @overload
+    def f2(self, x: str) -> str: pass
+    def f2(self, x: int | str) -> str: pass
+
+class C(A):
+    @overload
+    def f(self, y: int) -> str: pass
+    @override
+    @overload
+    def f(self, y: str) -> str: pass
+    def f(self, y: int | str) -> str: pass
+[typing fixtures/typing-full.pyi]
+[builtins fixtures/tuple.pyi]
